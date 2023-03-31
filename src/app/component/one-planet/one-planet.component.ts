@@ -4,11 +4,11 @@ import * as THREE from "three";
 const skyColor = new THREE.Color(0x231F70);
 
 @Component({
-  selector: 'app-cube',
-  templateUrl: './cube.component.html',
-  styleUrls: ['./cube.component.scss']
+  selector: 'app-one-planet',
+  templateUrl: './one-planet.component.html',
+  styleUrls: ['./one-planet.component.scss']
 })
-export class CubeComponent implements OnInit, AfterViewInit {
+export class OnePlanetComponent implements OnInit, AfterViewInit {
 
   @ViewChild('canvas')
   private canvasRef: ElementRef;
@@ -44,7 +44,7 @@ export class CubeComponent implements OnInit, AfterViewInit {
   // private cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
   // private cubeMaterial = new THREE.MeshBasicMaterial({ map: this.loader.load(this.texture) });
   
-  private sunGeometry = new THREE.SphereGeometry( 7.5, 16, 8 );
+  private sunGeometry = new THREE.SphereGeometry( 15, 32, 16 ); // new THREE.SphereGeometry( 7.5, 16, 8 );
   private sunMaterial = new THREE.MeshBasicMaterial( {
     // color: 0xffff00
     map: this.loader.load('/../../../assets/images/sun_texture.png')
@@ -110,7 +110,7 @@ export class CubeComponent implements OnInit, AfterViewInit {
     this.renderer.setPixelRatio(devicePixelRatio);
     this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
 
-    let component: CubeComponent = this;
+    let component: OnePlanetComponent = this;
     (function render() {
       requestAnimationFrame(render);
       component.animateCube();
