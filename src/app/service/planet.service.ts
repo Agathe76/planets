@@ -11,8 +11,8 @@ export class PlanetService {
     constructor() {}
   
     public getSun(): THREE.Mesh {
-        let sunGeometry = new THREE.SphereGeometry( 15, 32, 16 );
-        let sunMaterial = new THREE.MeshBasicMaterial( {
+        let sunGeometry = new THREE.SphereGeometry(15, 32, 16);
+        let sunMaterial = new THREE.MeshStandardMaterial( {
             map: this.loader.load('/../../../assets/images/sun_texture.png')
         });
       
@@ -20,8 +20,8 @@ export class PlanetService {
     }
 
     public getEarth(): THREE.Mesh {
-        let earthGeometry = new THREE.SphereGeometry( 3, 30, 30 );
-        let earthMaterial = new THREE.MeshBasicMaterial( {
+        let earthGeometry = new THREE.SphereGeometry(3, 30, 30);
+        let earthMaterial = new THREE.MeshStandardMaterial( {
             map: this.loader.load('/../../../assets/images/texture_bleue.png')
         });
       

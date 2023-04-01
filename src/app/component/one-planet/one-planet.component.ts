@@ -1,5 +1,5 @@
 import { PlanetService } from 'src/app/service/planet.service';
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import * as THREE from "three";
 
 const skyColor = new THREE.Color(0x231F70);
@@ -9,7 +9,7 @@ const skyColor = new THREE.Color(0x231F70);
   templateUrl: './one-planet.component.html',
   styleUrls: ['./one-planet.component.scss']
 })
-export class OnePlanetComponent implements OnInit, AfterViewInit {
+export class OnePlanetComponent implements AfterViewInit {
 
   @ViewChild('canvas')
   private canvasRef: ElementRef;
@@ -44,12 +44,8 @@ export class OnePlanetComponent implements OnInit, AfterViewInit {
 
   private sun: THREE.Mesh;
 
-
   constructor(private readonly planetService: PlanetService) {
     this.sun = this.planetService.getSun();
-  }
-
-  ngOnInit(): void {
   }
 
   ngAfterViewInit(): void {
@@ -84,7 +80,7 @@ export class OnePlanetComponent implements OnInit, AfterViewInit {
   }
 
   private startRenderingLoop(): void {
-    // Renderer
+    // renderer
     this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas });
     this.renderer.setPixelRatio(devicePixelRatio);
     this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
