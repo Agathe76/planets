@@ -1,3 +1,4 @@
+import { PlanetService } from 'src/app/service/planet.service';
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import * as THREE from "three";
 
@@ -13,7 +14,7 @@ export class OnePlanetComponent implements OnInit, AfterViewInit {
   @ViewChild('canvas')
   private canvasRef: ElementRef;
 
-  //* Cube Properties
+  // planet properties
 
   @Input() public rotationSpeedX: number = 0.00;
 
@@ -21,9 +22,7 @@ export class OnePlanetComponent implements OnInit, AfterViewInit {
 
   @Input() public size: number = 200;
 
-  @Input() public texture: string = "/../../../assets/images/texture.png";
-
-  //* Stage Properties
+  // stage Properties
 
   @Input() public cameraZ: number = 1000;
 
@@ -33,62 +32,43 @@ export class OnePlanetComponent implements OnInit, AfterViewInit {
 
   @Input('farClipping') public farClippingPlane: number = 1000;
 
-  //? Helper Properties (Private Properties);
+  // helper properties
 
   private camera!: THREE.PerspectiveCamera;
+  private renderer!: THREE.WebGLRenderer;
+  private scene!: THREE.Scene;
 
   private get canvas(): HTMLCanvasElement {
     return this.canvasRef.nativeElement;
   }
-  private loader = new THREE.TextureLoader();
-  // private cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
-  // private cubeMaterial = new THREE.MeshBasicMaterial({ map: this.loader.load(this.texture) });
-  
-  private sunGeometry = new THREE.SphereGeometry( 15, 32, 16 ); // new THREE.SphereGeometry( 7.5, 16, 8 );
-  private sunMaterial = new THREE.MeshBasicMaterial( {
-    // color: 0xffff00
-    map: this.loader.load('/../../../assets/images/sun_texture.png')
-  });
 
-  // private cube: THREE.Mesh = new THREE.Mesh(this.cubeGeometry, this.cubeMaterial);
-  private sun: THREE.Mesh = new THREE.Mesh(this.sunGeometry, this.sunMaterial);
+  private sun: THREE.Mesh;
 
-  private renderer!: THREE.WebGLRenderer;
 
-  private scene!: THREE.Scene;
-
-  constructor() { }
-
-  ngOnInit(): void {
-
+  constructor(private readonly planetService: PlanetService) {
+    this.sun = this.planetService.getSun();
   }
 
-  ngAfterViewInit() {
+  ngOnInit(): void {
+  }
+
+  ngAfterViewInit(): void {
     this.createScene();
     this.startRenderingLoop();
   }
 
-  private animateCube() {
-    // this.cube.rotation.x += this.rotationSpeedX;
-    // this.cube.rotation.y += this.rotationSpeedY;
+  private animateCube(): void {
     this.sun.rotation.x += this.rotationSpeedX;
     this.sun.rotation.y += this.rotationSpeedY;
   }
 
-  private createScene() {
-    //* Scene
+  private createScene(): void {
+    // create scene
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(skyColor);
-    // this.scene.add(this.cube);
     this.scene.add(this.sun);
 
-    // const geometry = new THREE.SphereGeometry( 1.5, 3.2, 1.6 );
-    // const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
-    // const sphere = new THREE.Mesh( geometry, material );
-    // this.scene.add( sphere );
-
-
-    //*Camera
+    // config camera
     let aspectRatio = this.getAspectRatio();
     this.camera = new THREE.PerspectiveCamera(
       this.fieldOfView,
@@ -99,13 +79,12 @@ export class OnePlanetComponent implements OnInit, AfterViewInit {
     this.camera.position.z = this.cameraZ;
   }
 
-  private getAspectRatio() {
+  private getAspectRatio(): number {
     return this.canvas.clientWidth / this.canvas.clientHeight;
   }
 
-  private startRenderingLoop() {
-    //* Renderer
-    // Use canvas element in template
+  private startRenderingLoop(): void {
+    // Renderer
     this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas });
     this.renderer.setPixelRatio(devicePixelRatio);
     this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
