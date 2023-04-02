@@ -2,7 +2,7 @@ import { PlanetService } from 'src/app/service/planet.service';
 import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import * as THREE from "three";
 
-const skyColor = new THREE.Color(0x231F70);
+const skyColor = new THREE.Color(0x010101);
 
 @Component({
   selector: 'app-one-planet',
@@ -24,13 +24,13 @@ export class OnePlanetComponent implements AfterViewInit {
 
   // stage Properties
 
-  @Input() public cameraZ: number = 1000;
+  @Input() public cameraZ: number = 2000;
 
   @Input() public fieldOfView: number = 1;
 
   @Input('nearClipping') public nearClippingPlane: number = 1;
 
-  @Input('farClipping') public farClippingPlane: number = 1000;
+  @Input('farClipping') public farClippingPlane: number = 10000;
 
   // helper properties
 

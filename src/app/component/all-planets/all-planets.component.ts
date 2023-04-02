@@ -3,9 +3,9 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import * as THREE from "three";
 import { Router } from "@angular/router";
-import { PlanetService } from "src/app/service/planet.service";
+import { PlanetAndObject, PlanetService } from "src/app/service/planet.service";
 
-const skyColor = new THREE.Color(0x231F70);
+const skyColor = new THREE.Color(0x010101);
 
 @Component({
     selector: 'app-all-planets',
@@ -27,8 +27,6 @@ export class AllPlanetsComponent implements AfterViewInit {
     // scene properties
     private camera: THREE.PerspectiveCamera;
     private controls: OrbitControls;
-    private ambientLight: THREE.AmbientLight;
-    private light1: THREE.PointLight;
     private scene: THREE.Scene;
     private renderer: THREE.WebGLRenderer;
   
@@ -37,21 +35,22 @@ export class AllPlanetsComponent implements AfterViewInit {
     }
   
     // planets 
-    private distanceEarthSun: number = 30;
-    private sun: THREE.Mesh;
-    private earth: THREE.Mesh;
-    private earthObj: THREE.Object3D; // obj for rotation arround the sun
+    private distanceEarthSun: number = 33;
+    private distanceMarsSun: number = 25;
+    private sun: PlanetAndObject;
+    private earth: PlanetAndObject;
+    private mars: PlanetAndObject;
   
-    constructor(private readonly router: Router, private readonly planetService: PlanetService) {
-        this.sun = this.planetService.getSun();
-        this.earth = this.planetService.getEarth();
-        this.earthObj = new THREE.Object3D();
-
-        this.earthObj.add(this.earth);
-        this.earth.position.x = this.distanceEarthSun;
+    public constructor(private readonly router: Router, private readonly planetService: PlanetService) {
+        this.sun = this.planetService.createSunAndObject(16, '/../../../assets/images/sun_texture.png');
+        this.earth = this.planetService.createPlanetAndObject(3, '/../../../assets/images/texture_bleue.png');
+        this.mars = this.planetService.createPlanetAndObject(2, '/../../../assets/images/texture_verte.png');
+        
+        this.earth.planet.position.x = this.distanceEarthSun;
+        this.mars.planet.position.x = this.distanceMarsSun;
     }
   
-    ngAfterViewInit(): void {
+    public ngAfterViewInit(): void {
         this.createScene();
         this.startRenderingLoop();
         this.createControls();
@@ -62,12 +61,14 @@ export class AllPlanetsComponent implements AfterViewInit {
     }
 
     private animateModel(): void {
-        this.sun.rotateY(0.01);
-        this.earth.rotateY(0.005);
-        this.earthObj.rotateY(0.04);
+        this.sun.planet.rotateY(0.01);
+        this.earth.planet.rotateY(0.005);
+        this.earth.object.rotateY(0.04);
+        this.mars.planet.rotateY(0.008);
+        this.mars.object.rotateY(0.06);
     }
   
-    private createControls = (): void => {
+    private createControls(): void {
         const renderer = new CSS2DRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.domElement.style.position = 'absolute';
@@ -95,17 +96,19 @@ export class AllPlanetsComponent implements AfterViewInit {
             this.farClippingPane
         );
         this.camera.position.x = 100;
-        this.camera.position.y = 100;
+        this.camera.position.y = 200;
         this.camera.position.z = 10000;
+
         // add lights
-        this.ambientLight = new THREE.AmbientLight(0xFAE7C9, 0.5);
-        this.light1 = new THREE.PointLight(0xFAE7C9, 2, 300);
+        const ambientLight: THREE.AmbientLight = new THREE.AmbientLight(0x333333);
+        const pointLight: THREE.PointLight = new THREE.PointLight(0xFFFFFF, 2, 300);
         
         // add elements to the scene in order
-        this.scene.add(this.sun);
-        this.scene.add(this.ambientLight);
-        this.scene.add(this.earthObj);
-        this.scene.add(this.light1);
+        this.scene.add(this.sun.planet);
+        this.scene.add(this.earth.object);
+        this.scene.add(this.mars.object);
+        this.scene.add(ambientLight);
+        this.scene.add(pointLight);
     }
   
     private getAspectRatio(): number {
